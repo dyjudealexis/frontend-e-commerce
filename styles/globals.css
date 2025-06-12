@@ -1,0 +1,30 @@
+.thank-you-check{
+    font-size: 100px;
+    color: #C7595F;
+}
+
+.list-group-item.active{
+    background-color: #C7595F;
+    border-color: #C7595F;
+}
+
+.form-control:focus {
+    border-color: #df3545;
+    box-shadow: 0 0 0 .2rem #e3102d40;
+}
+
+.text-primary{
+    color: #C7595F !important;
+}
+
+.text-primary:hover{
+    color: #96363b !important;
+}
+
+.login{
+    padding-top: 50px;
+}
+
+.register{
+    padding-top: 50px;
+}
