@@ -19,11 +19,11 @@ const ThankYouPage: React.FC = () => {
                 Your order has been placed successfully. We appreciate your
                 business!
               </p>
-              <div className="thank-you__actions">
-                <Link href="/shop" className="primary-btn mr-2">
+              <div className="thank-you__actions text-center">
+                <Link href="/shop" className="primary-btn mr-sm-2 mb-2">
                   CONTINUE SHOPPING
                 </Link>
-                <Link href="/profile/orders" className="primary-btn cart-btn">
+                <Link href="/profile/orders" className="primary-btn cart-btn mb-2">
                   VIEW ORDER DETAILS
                 </Link>
               </div>
