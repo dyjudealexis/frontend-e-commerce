@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React from 'react';
 
 const products = [
@@ -84,9 +85,16 @@ const FeaturedSection: React.FC = () => {
                   style={{ backgroundImage: `url(${product.image})` }}
                 >
                   <ul className="featured__item__pic__hover">
-                    <li><a href="#"><i className="fa fa-heart"></i></a></li>
-                    <li><a href="#"><i className="fa fa-retweet"></i></a></li>
-                    <li><a href="#"><i className="fa fa-shopping-cart"></i></a></li>
+                   <li>
+                          <Link href="/shop/details">
+                            <i className="fa fa-expand"></i>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="#">
+                            <i className="fa fa-shopping-cart"></i>
+                          </Link>
+                        </li>
                   </ul>
                 </div>
                 <div className="featured__item__text">

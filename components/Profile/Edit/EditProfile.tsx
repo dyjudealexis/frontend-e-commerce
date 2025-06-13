@@ -152,9 +152,12 @@ const EditProfile = () => {
                   />
                 </div>
               </div>
+
               <Link href="/profile" className="primary-btn cart-btn">
                 Cancel
               </Link>
+
+              <span className="me-2"></span>
 
               <button type="submit" className="site-btn mt-3">
                 Save Changes

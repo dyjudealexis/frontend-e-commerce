@@ -53,3 +53,9 @@ a,
 .checkout__order, .blog-image, .border-radius-24 {
   border-radius: 24px !important;
 }
+
+@media (max-width: 767.98px) {
+  .product-image {
+    height: auto !important;
+  }
+}

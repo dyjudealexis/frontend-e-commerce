@@ -42,6 +42,8 @@ const ProductSection: React.FC = () => {
                       className="product__item__pic"
                       style={{
                         backgroundImage: `url(/img/product/product-${index}.jpg)`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
                       }}
                     >
                       <ul className="product__item__pic__hover">
@@ -59,7 +61,7 @@ const ProductSection: React.FC = () => {
                     </div>
                     <div className="product__item__text">
                       <h6>
-                        <Link href="#">Crab Pool Security</Link>
+                        <Link href="/shop/details">Crab Pool Security</Link>
                       </h6>
                       <h5>₱30.00</h5>
                     </div>
