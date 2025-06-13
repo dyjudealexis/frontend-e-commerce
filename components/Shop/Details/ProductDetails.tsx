@@ -7,11 +7,19 @@ import { useState } from 'react';
 const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
 
+  const handleQuantityChange = (value: number) => {
+    if (value >= 1 && value <= 10) {
+      setQuantity(value);
+    }
+  };
+
+  const increment = () => handleQuantityChange(quantity + 1);
+  const decrement = () => handleQuantityChange(quantity - 1);
+
   return (
     <section className="product-details spad">
       <div className="container">
         <div className="row">
-          {/* Product Image Section */}
           <div className="col-lg-6 col-md-6">
             <div className="product__details__pic">
               <div className="product__details__pic__item">
@@ -23,35 +31,59 @@ const ProductDetails = () => {
                   height={500}
                 />
               </div>
-              
             </div>
           </div>
 
-          {/* Product Details Section */}
           <div className="col-lg-6 col-md-6">
             <div className="product__details__text">
               <h3>Vegetable’s Package</h3>
-              {/* <div className="product__details__rating">
-                {[...Array(4)].map((_, i) => (
-                  <i key={i} className="fa fa-star"></i>
-                ))}
-                <i className="fa fa-star-half-o"></i>
-                <span>4.7</span>
-              </div> */}
               <div className="product__details__price">₱50.00</div>
-              <p>
-                Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ac diam sit amet quam
-                vehicula elementum sed sit amet dui...
-              </p>
+              <p>Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a...</p>
 
               <div className="product__details__quantity">
                 <div className="quantity">
-                  <div className="pro-qty">
+                  <div className="pro-qty" style={{ position: 'relative', display: 'inline-block' }}>
+                    <button
+                      onClick={decrement}
+                      style={{
+                        position: 'absolute',
+                        left: 5,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        border: 'none',
+                        background: 'none',
+                        fontSize: '16px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      −
+                    </button>
                     <input
                       type="number"
                       value={quantity}
-                      onChange={(e) => setQuantity(parseInt(e.target.value))}
+                      readOnly
+                      style={{
+                        paddingLeft: '30px',
+                        paddingRight: '30px',
+                        textAlign: 'center',
+                        width: '80px'
+                      }}
                     />
+                    <button
+                      onClick={increment}
+                      style={{
+                        position: 'absolute',
+                        right: 5,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        border: 'none',
+                        background: 'none',
+                        fontSize: '16px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               </div>
@@ -77,7 +109,6 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Tabs Section */}
           <div className="col-lg-12">
             <div className="product__details__tab">
               <ul className="nav nav-tabs" role="tablist">

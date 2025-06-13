@@ -2951,7 +2951,7 @@ ol {
 		width: 35px;
 		line-height: 33px;
 		text-align: center;
-		border: 1px solid #1c1c1c;
+		/* border: 1px solid #1c1c1c; */
 		cursor: pointer;
 		position: absolute;
 		right: 15px;
@@ -3209,7 +3209,7 @@ ol {
 		width: 35px;
 		line-height: 33px;
 		text-align: center;
-		border: 1px solid #1c1c1c;
+		/* border: 1px solid #1c1c1c; */
 		cursor: pointer;
 		position: absolute;
 		right: 15px;
