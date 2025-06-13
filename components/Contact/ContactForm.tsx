@@ -94,12 +94,12 @@ const ContactForm: React.FC = () => {
                 <li className="mb-0"><strong>Phone:</strong> +63 9204042919</li>
                 <li className="mb-0"><strong>Email:</strong> dyjudealexis@gmail.com</li>
                 <li className="mb-0"><strong>Website:</strong>{" "}
-                  <a href="https://jude-alexis-dy.site" target="_blank" rel="noopener noreferrer">
+                  <a href="https://jude-alexis-dy.site" className="link-a" target="_blank" rel="noopener noreferrer">
                     jude-alexis-dy.site
                   </a>
                 </li>
                 <li className="mb-0"><strong>LinkedIn:</strong>{" "}
-                  <a href="https://linkedin.com/in/jude-alexis-dy-9b7213215" target="_blank" rel="noopener noreferrer">
+                  <a href="https://linkedin.com/in/jude-alexis-dy-9b7213215" className="link-a" target="_blank" rel="noopener noreferrer">
                     linkedin.com/in/jude-alexis-dy
                   </a>
                 </li>
