@@ -11,13 +11,8 @@ const BlogDetailsSection = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    // Set initial value
     handleResize();
-
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Cleanup
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -25,35 +20,37 @@ const BlogDetailsSection = () => {
     <section className="blog-details">
       <div className="container">
         <div className="row">
-          {/* Sidebar */}
-          <div className="col-lg-4 col-md-5 order-md-1 order-2">
-            <div className="blog__sidebar"></div>
+          {/* Image Section */}
+          <div className="col-md-6 mb-4">
+            <Image
+              src="/img/blog/details/details-pic.jpg"
+              alt="Blog Detail"
+              width={isMobile ? 360 : 500}
+              height={isMobile ? 240 : 350}
+              className="img-fluid w-100 border-radius-24 border"
+              style={{ objectFit: "cover" }}
+            />
           </div>
-          {/* Main Blog Content */}
-          <div className="col-12 order-md-1 order-1">
-            <div className="blog__details__text">
-              <Image
-                src="/img/blog/details/details-pic.jpg"
-                alt=""
-                width={730}
-                height={isMobile ? 300 : 500}
-                className={`w-100 ${isMobile ? "h-auto" : ""}`}
-              />
-              <p>
-                Sed porttitor lectus nibh. Vestibulum ac diam sit amet quam
-                vehicula elementum sed sit amet dui...
-              </p>
-              <h3>
-                The corner window forms a place within a place that is a resting
-                point within the large space.
-              </h3>
-              <p>
-                The study area is located at the back with a view of the vast
-                nature. Together with the other buildings...
-              </p>
-            </div>
-          </div>{" "}
-          {/* End of Main Blog */}
+
+          {/* Text Section */}
+          <div className="col-md-6">
+            <h3 className="fw-bold mb-4">
+              The corner window forms a place within a place that is a resting
+              point within the large space.
+            </h3>
+            <p>
+              The study area is situated at the rear of the property, offering a
+              serene and uninterrupted view of the expansive natural landscape.
+              Surrounded by lush greenery and distant rolling hills, it provides
+              a peaceful environment ideal for concentration and reflection.
+              This tranquil setting is further enhanced by its thoughtful
+              placement alongside the other buildings on the premises, which
+              together form a harmonious layout that encourages both
+              productivity and relaxation. The connection to nature through
+              large windows and natural lighting makes the study area not just a
+              place to work, but a retreat that fosters inspiration and calm.
+            </p>
+          </div>
         </div>
       </div>
     </section>
