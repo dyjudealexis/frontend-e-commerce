@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
                 <button type="submit" className="primary-btn w-100 border-0">LOGIN</button>
               </form>
               <p className="mt-4">
-                Don’t have an account? <Link href="/register" className="text-primary">Register</Link>
+                Don’t have an account? <Link href="/register" className="user-a">Register</Link>
               </p>
             </div>
           </div>

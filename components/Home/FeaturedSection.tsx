@@ -91,7 +91,7 @@ const FeaturedSection: React.FC = () => {
                 </div>
                 <div className="featured__item__text">
                   <h6><a href="#">{product.title}</a></h6>
-                  <h5>${product.price.toFixed(2)}</h5>
+                  <h5>₱{product.price.toFixed(2)}</h5>
                 </div>
               </div>
             </div>

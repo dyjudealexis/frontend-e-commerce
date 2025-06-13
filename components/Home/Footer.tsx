@@ -34,7 +34,7 @@ const Footer: FC = () => {
                                 <li><Link href="/">Home</Link></li>
                                 <li><Link href="/shop">Shop</Link></li>
                                 <li><Link href="/blog">Blog</Link></li>
-                                <li><Link href="/contact">Contact</Link></li>
+                                <li><Link href="/contact-me">Contact</Link></li>
                             </ul>
                         </div>
                     </div>
@@ -66,7 +66,7 @@ const Footer: FC = () => {
                                 <p>
                                     &copy; {new Date().getFullYear()} E-Commerce All rights reserved | Developed by{' '}
                                     
-                                    <Link href="https://www.jude-alexis-dy.site" target="_blank" rel="noopener noreferrer">Jude Alexis Dy</Link>
+                                    <Link href="https://www.jude-alexis-dy.site" target="_blank" className='footer-a' rel="noopener noreferrer">Jude Alexis Dy</Link>
                                 </p>
                             </div>
                         </div>

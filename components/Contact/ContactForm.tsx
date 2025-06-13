@@ -7,6 +7,7 @@ const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    subject: "",
     message: "",
   });
 
@@ -57,6 +58,16 @@ const ContactForm: React.FC = () => {
                 />
               </div>
               <div className="mb-0">
+                <input
+                  type="text"
+                  name="subject"
+                  placeholder="Subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="form-control mb-3"
+                />
+              </div>
+              <div className="mb-0">
                 <textarea
                   name="message"
                   placeholder="Your message"
@@ -79,42 +90,21 @@ const ContactForm: React.FC = () => {
             <div className="checkout__order">
               <h4 className="fw-bold mb-2">Contact Information</h4>
               <ul className="list-unstyled">
-                <li className="mb-0">
-                  <strong>Name:</strong> Jude Alexis Dy
-                </li>
-                <li className="mb-0">
-                  <strong>Phone:</strong> +63 9204042919
-                </li>
-                <li className="mb-0">
-                  <strong>Email:</strong> dyjudealexis@gmail.com
-                </li>
-                <li className="mb-0">
-                  <strong>Website:</strong>{" "}
-                  <a
-                    href="https://jude-alexis-dy.site"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                <li className="mb-0"><strong>Name:</strong> Jude Alexis Dy</li>
+                <li className="mb-0"><strong>Phone:</strong> +63 9204042919</li>
+                <li className="mb-0"><strong>Email:</strong> dyjudealexis@gmail.com</li>
+                <li className="mb-0"><strong>Website:</strong>{" "}
+                  <a href="https://jude-alexis-dy.site" target="_blank" rel="noopener noreferrer">
                     jude-alexis-dy.site
                   </a>
                 </li>
-                <li className="mb-0">
-                  <strong>LinkedIn:</strong>{" "}
-                  <a
-                    href="https://linkedin.com/in/jude-alexis-dy-9b7213215"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                <li className="mb-0"><strong>LinkedIn:</strong>{" "}
+                  <a href="https://linkedin.com/in/jude-alexis-dy-9b7213215" target="_blank" rel="noopener noreferrer">
                     linkedin.com/in/jude-alexis-dy
                   </a>
                 </li>
-                <li className="mb-0">
-                  <strong>Location:</strong> Taguig City, Metro Manila,
-                  Philippines
-                </li>
-                <li className="mb-0">
-                  <strong>Availability:</strong> Mon–Fri, 9AM–6PM
-                </li>
+                <li className="mb-0"><strong>Location:</strong> Taguig City, Metro Manila, Philippines</li>
+                <li className="mb-0"><strong>Availability:</strong> Mon–Fri, 9AM–6PM</li>
               </ul>
             </div>
           </div>

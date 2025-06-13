@@ -38,7 +38,7 @@ const ProductDetails = () => {
                 <i className="fa fa-star-half-o"></i>
                 <span>4.7</span>
               </div> */}
-              <div className="product__details__price">$50.00</div>
+              <div className="product__details__price">₱50.00</div>
               <p>
                 Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ac diam sit amet quam
                 vehicula elementum sed sit amet dui...

@@ -10,9 +10,9 @@ type Product = {
 };
 
 const products: Product[] = [
-  { id: 1, title: 'Crab Pool Security', price: '$30.00', image: '/img/latest-product/lp-1.jpg' },
-  { id: 2, title: 'Crab Pool Security', price: '$30.00', image: '/img/latest-product/lp-2.jpg' },
-  { id: 3, title: 'Crab Pool Security', price: '$30.00', image: '/img/latest-product/lp-3.jpg' },
+  { id: 1, title: 'Crab Pool Security', price: '₱30.00', image: '/img/latest-product/lp-1.jpg' },
+  { id: 2, title: 'Crab Pool Security', price: '₱30.00', image: '/img/latest-product/lp-2.jpg' },
+  { id: 3, title: 'Crab Pool Security', price: '₱30.00', image: '/img/latest-product/lp-3.jpg' },
 ];
 
 const renderProductItems = () => {

@@ -112,15 +112,15 @@ const CheckoutSection: React.FC = () => {
                     Products <span>Total</span>
                   </div>
                   <ul>
-                    <li>Vegetable’s Package <span>$75.99</span></li>
-                    <li>Fresh Vegetable <span>$151.99</span></li>
-                    <li>Organic Bananas <span>$53.99</span></li>
+                    <li>Vegetable’s Package <span>₱75.99</span></li>
+                    <li>Fresh Vegetable <span>₱151.99</span></li>
+                    <li>Organic Bananas <span>₱53.99</span></li>
                   </ul>
                   <div className="checkout__order__subtotal">
-                    Subtotal <span>$750.99</span>
+                    Subtotal <span>₱750.99</span>
                   </div>
                   <div className="checkout__order__total">
-                    Total <span>$750.99</span>
+                    Total <span>₱750.99</span>
                   </div>
                   <div className="checkout__input__checkbox">
                     <label htmlFor="acc-or">

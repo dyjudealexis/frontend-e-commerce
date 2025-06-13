@@ -28,7 +28,7 @@ const HamburgerMenu: React.FC = () => {
             </li>
           </ul>
           <div className="header__cart__price">
-            item: <span>$150.00</span>
+            item: <span>₱150.00</span>
           </div>
         </div>
         <div className="humberger__menu__widget">
@@ -94,7 +94,7 @@ const HamburgerMenu: React.FC = () => {
         <div className="humberger__menu__contact">
           <ul>
             <li><i className="fa fa-envelope" /> hello@colorlib.com</li>
-            <li>Free Shipping for all Order of $99</li>
+            <li>Free Shipping for all Order of ₱99</li>
           </ul>
         </div>
       </div>

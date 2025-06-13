@@ -55,7 +55,7 @@ const BlogSection: React.FC = () => {
             <div className="col-lg-4 col-md-4 col-sm-6" key={index}>
               <div className="blog__item">
                 <div className="blog__item__pic">
-                  <Image src={item.imgSrc} alt={item.title} width={350} height={220} layout="responsive" />
+                  <Image src={item.imgSrc} alt={item.title} width={350} height={220} layout="responsive" className='blog-image' />
                 </div>
                 <div className="blog__item__text">
                   <ul>

@@ -16,19 +16,26 @@ const ProfileSidebar = () => {
 
   return (
     <div className="col-lg-3 mb-4">
-      <div className="list-group">
-        {links.map(({ href, label, className, icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={`list-group-item list-group-item-action fw-semibold d-flex align-items-center gap-2 ${className || ""} ${
-              pathname === href ? "active" : ""
-            }`}
-          >
-            <i className={`${icon}`}></i>
-            {label}
-          </Link>
-        ))}
+      <div className="list-group gap-2">
+        {links.map(({ href, label, className, icon }) => {
+          const isActive =
+            href === "/profile"
+              ? pathname.startsWith("/profile") && !pathname.startsWith("/profile/orders")
+              : pathname === href;
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`list-group-item list-group-item-action fw-semibold d-flex align-items-center gap-2 border ${className || ""} ${
+                isActive ? "active" : ""
+              }`}
+            >
+              <i className={`${icon}`}></i>
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

@@ -61,7 +61,7 @@ const ProductSection: React.FC = () => {
                       <h6>
                         <Link href="#">Crab Pool Security</Link>
                       </h6>
-                      <h5>$30.00</h5>
+                      <h5>₱30.00</h5>
                     </div>
                   </div>
                 </div>
