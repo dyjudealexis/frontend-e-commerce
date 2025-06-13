@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -49,13 +49,21 @@ const CompletedOrders: React.FC = () => {
                   {completed.map((item) => (
                     <tr key={item.id}>
                       <td className="shoping__cart__item d-flex align-items-center gap-3">
-                        <Image src={item.image} alt={item.name} width={70} height={70} />
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={70}
+                          height={70}
+                          className="rounded-4"
+                        />
                         <h6 className="mb-0">{item.name}</h6>
                       </td>
                       <td className="pt-5">${item.price.toFixed(2)}</td>
                       <td className="pt-5">{item.quantity}</td>
                       <td className="pt-5">${item.total.toFixed(2)}</td>
-                      <td className="pt-5"><span className="badge bg-success">Completed</span></td>
+                      <td className="pt-5">
+                        <span className="badge bg-success">Completed</span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -52,19 +52,26 @@ const YourOrders: React.FC = () => {
                   {orders.map((order) => (
                     <tr key={order.id}>
                       <td className="shoping__cart__item d-flex align-items-center gap-3">
-                        <Image src={order.image} alt={order.name} width={70} height={70} />
+                        <Image
+                          src={order.image}
+                          alt={order.name}
+                          width={70}
+                          height={70}
+                          className="rounded-4"
+                        />
                         <h6 className="mb-0">{order.name}</h6>
                       </td>
                       <td className="pt-5">${order.price.toFixed(2)}</td>
                       <td className="pt-5">{order.quantity}</td>
                       <td className="pt-5">${order.total.toFixed(2)}</td>
-                      <td className="pt-5"><span className="badge bg-info">Pending</span></td>
+                      <td className="pt-5">
+                        <span className="badge bg-info">Pending</span>
+                      </td>
                       <td className="pt-5">
                         {order.received && (
                           <button
-                            className="btn btn-sm btn-outline-success d-flex align-items-center gap-1"
+                            className="btn btn-sm btn-outline-success d-flex align-items-center gap-1 border-radius-24"
                             title="Product received"
-                            
                           >
                             <i className="icon_check_alt2"></i> Received
                           </button>
