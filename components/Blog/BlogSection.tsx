@@ -43,7 +43,7 @@ const BlogSection: React.FC = () => {
                   ].map((item, index) => (
                     <Link href="#" className="blog__sidebar__recent__item" key={index}>
                       <div className="blog__sidebar__recent__item__pic">
-                        <Image src={item.src} alt="" width={70} height={70} />
+                        <Image src={item.src} alt={item.title} width={70} height={70} />
                       </div>
                       <div className="blog__sidebar__recent__item__text">
                         <h6>{item.title.split(' ').slice(0, 5).join(' ')}<br />{item.title.split(' ').slice(5).join(' ')}</h6>
