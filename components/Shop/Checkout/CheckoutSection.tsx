@@ -1,16 +1,126 @@
-// components/CheckoutSection.tsx
+"use client";
 
-import React from 'react';
-import { useRouter } from 'next/router';
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { CartItem, clearCart } from "@/utils/cart";
+import {
+  getEncryptedCookie,
+  setEncryptedCookie,
+} from "@/utils/cookieWithCrypto";
+import toast from "react-hot-toast";
+import api from "@/utils/axios";
+import { loadCheckoutData } from "@/utils/loadCheckoutData";
+import inputFields from "@/assets/json/checkoutInputs.json";
+import { Profile } from "@/models";
+import { setCookie } from "@/utils/cookies";
 
 const CheckoutSection: React.FC = () => {
   const router = useRouter();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [subtotal, setSubtotal] = useState<number>(0);
+  const [profile, setProfile] = useState<Profile>({
+    full_name: "",
+    country: "",
+    line1: "",
+    line2: "",
+    city: "",
+    state: "",
+    postal_code: "",
+    phone: "",
+    email: "",
+    order_notes: "",
+    address_id: 0,
+  });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // 👈 loader state
+  const lastVisitedPath = getEncryptedCookie(
+    `${process.env.NEXT_PUBLIC_LAST_VISITED_PATH}`
+  );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // You could process form data here
-    router.push('/shop/thank-you');
+  // inside CheckoutSection...
+  useEffect(() => {
+    const { cart, subtotal, profile } = loadCheckoutData();
+    setCartItems(cart);
+    setSubtotal(subtotal);
+    setProfile(profile);
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        full_name: profile.full_name,
+        email: profile.email,
+        phone: profile.phone,
+        addresses: [
+          {
+            address_id: profile.address_id,
+            line1: profile.line1,
+            line2: profile.line2,
+            city: profile.city,
+            state: profile.state,
+            postal_code: profile.postal_code,
+            country: profile.country,
+            order_notes: profile.order_notes,
+          },
+        ],
+      };
+
+      const order_transactions_payload = {
+        shipping_address_id: profile.address_id,
+        billing_address_id: profile.address_id,
+        total_cents: subtotal * 100,
+        items: cartItems.map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          unit_price_cents: item.price * 100, // convert PHP to cents
+        })),
+        method: "cash_on_delivery",
+        status: "pending",
+      };
+
+      await api.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/order-transaction`,
+        order_transactions_payload
+      );
+      const response = await api.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/me`,
+        payload
+      );
+
+      setEncryptedCookie(
+        `${process.env.NEXT_PUBLIC_USER_COOKIE}`,
+        response.data.user
+      );
+      setCookie(
+        `${process.env.NEXT_PUBLIC_HAS_PLACE_ORDER_COOKIE}`,
+        "place_order_true",
+        {
+          path: "/",
+          sameSite: "Lax",
+        }
+      );
+
+      if (lastVisitedPath === "/shop/cart"){
+        clearCart(`${process.env.NEXT_PUBLIC_CART_COOKIE}`);
+      }
+
+      router.push("/shop/thank-you");
+    } catch {
+      toast.error("An error occurred while updating the profile.");
+    } finally {
+      setIsSubmitting(false); // <-- Stop loader
+    }
+  };
+
   return (
     <section className="checkout spad">
       <div className="container">
@@ -20,88 +130,54 @@ const CheckoutSection: React.FC = () => {
             <div className="row">
               <div className="col-lg-8 col-md-6">
                 <div className="row">
-                  <div className="col-lg-6">
-                    <div className="checkout__input">
-                      <p>First Name<span>*</span></p>
-                      <input type="text" />
-                    </div>
-                  </div>
-                  <div className="col-lg-6">
-                    <div className="checkout__input">
-                      <p>Last Name<span>*</span></p>
-                      <input type="text" />
-                    </div>
-                  </div>
+                  {inputFields.map(
+                    ({
+                      name,
+                      label,
+                      type,
+                      required,
+                      readOnly,
+                      className,
+                      placeholder,
+                    }) => (
+                      <div
+                        className={`checkout__input ${
+                          ["line1", "line2"].includes(name)
+                            ? "col-lg-12"
+                            : "col-lg-6"
+                        }`}
+                        key={name}
+                      >
+                        <p>
+                          {label}
+                          {required && <span>*</span>}
+                        </p>
+                        <input
+                          type={type}
+                          name={name}
+                          value={profile[name as keyof Profile]}
+                          onChange={handleChange}
+                          placeholder={placeholder || ""}
+                          required={required}
+                          readOnly={readOnly}
+                          className={`${readOnly ? "read-only" : ""} ${
+                            className || ""
+                          }`}
+                        />
+                      </div>
+                    )
+                  )}
                 </div>
+
                 <div className="checkout__input">
-                  <p>Country<span>*</span></p>
-                  <input type="text" />
-                </div>
-                <div className="checkout__input">
-                  <p>Address<span>*</span></p>
-                  <input
-                    type="text"
-                    placeholder="Street Address"
-                    className="checkout__input__add"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Apartment, suite, unit etc (optional)"
-                  />
-                </div>
-                <div className="checkout__input">
-                  <p>Town/City<span>*</span></p>
-                  <input type="text" />
-                </div>
-                <div className="checkout__input">
-                  <p>Country/State<span>*</span></p>
-                  <input type="text" />
-                </div>
-                <div className="checkout__input">
-                  <p>Postcode / ZIP<span>*</span></p>
-                  <input type="text" />
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <div className="checkout__input">
-                      <p>Phone<span>*</span></p>
-                      <input type="text" />
-                    </div>
-                  </div>
-                  <div className="col-lg-6">
-                    <div className="checkout__input">
-                      <p>Email<span>*</span></p>
-                      <input type="text" />
-                    </div>
-                  </div>
-                </div>
-                <div className="checkout__input__checkbox">
-                  <label htmlFor="acc">
-                    Create an account?
-                    <input type="checkbox" id="acc" />
-                    <span className="checkmark"></span>
-                  </label>
-                </div>
-                <p>
-                  Create an account by entering the information below. If you are a
-                  returning customer please login at the top of the page
-                </p>
-                <div className="checkout__input">
-                  <p>Account Password<span>*</span></p>
-                  <input type="text" />
-                </div>
-                <div className="checkout__input__checkbox">
-                  <label htmlFor="diff-acc">
-                    Ship to a different address?
-                    <input type="checkbox" id="diff-acc" />
-                    <span className="checkmark"></span>
-                  </label>
-                </div>
-                <div className="checkout__input">
-                  <p>Order notes<span>*</span></p>
-                  <input
-                    type="text"
-                    placeholder="Notes about your order, e.g. special notes for delivery."
+                  <p>Order Notes</p>
+                  <textarea
+                    name="order_notes"
+                    placeholder="Notes about your order, e.g. special instructions for delivery."
+                    rows={3}
+                    value={profile.order_notes}
+                    onChange={handleChange}
+                    className="border p-3 w-100"
                   />
                 </div>
               </div>
@@ -112,43 +188,31 @@ const CheckoutSection: React.FC = () => {
                     Products <span>Total</span>
                   </div>
                   <ul>
-                    <li>Vegetable’s Package <span>₱75.99</span></li>
-                    <li>Fresh Vegetable <span>₱151.99</span></li>
-                    <li>Organic Bananas <span>₱53.99</span></li>
+                    {cartItems.map((item) => (
+                      <li key={item.product_id}>
+                        {item.name} × {item.quantity}
+                        <span>₱{(item.price * item.quantity).toFixed(2)}</span>
+                      </li>
+                    ))}
                   </ul>
                   <div className="checkout__order__subtotal">
-                    Subtotal <span>₱750.99</span>
+                    Subtotal <span>₱{subtotal.toFixed(2)}</span>
                   </div>
                   <div className="checkout__order__total">
-                    Total <span>₱750.99</span>
+                    Total <span>₱{subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="checkout__input__checkbox">
-                    <label htmlFor="acc-or">
-                      Create an account?
-                      <input type="checkbox" id="acc-or" />
-                      <span className="checkmark"></span>
-                    </label>
-                  </div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua.
+                  <p className="text-primary">
+                    <em>
+                      *This is a demo checkout only, no real charges will be
+                      applied. Thank you.*
+                    </em>
                   </p>
-                  <div className="checkout__input__checkbox">
-                    <label htmlFor="payment">
-                      Check Payment
-                      <input type="checkbox" id="payment" />
-                      <span className="checkmark"></span>
-                    </label>
-                  </div>
-                  <div className="checkout__input__checkbox">
-                    <label htmlFor="paypal">
-                      Paypal
-                      <input type="checkbox" id="paypal" />
-                      <span className="checkmark"></span>
-                    </label>
-                  </div>
-                  <button type="submit" className="site-btn">
-                    PLACE ORDER
+                  <button
+                    type="submit"
+                    className="site-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Processing..." : "PLACE ORDER"}
                   </button>
                 </div>
               </div>

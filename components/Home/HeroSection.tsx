@@ -16,15 +16,15 @@ const HeroSection: React.FC = () => {
 
             <div
               className="hero__item set-bg"
-              style={{ backgroundImage: 'url("/img/hero/banner.jpg")' }}
+              style={{ backgroundImage: 'url("/img/hero/banner-1.webp")', backgroundPositionY: "40%" }} // Update to a relevant image
             >
               <div className="hero__text">
-                <span>FRUIT FRESH</span>
-                <h2>
-                  Vegetable <br />
-                  100% Organic
+                <span>NEW SEASON</span>
+                <h2 className='hero-h2'>
+                  Stylish Clothing <br />
+                  For Every Occasion
                 </h2>
-                <p>Free Pickup and Delivery Available</p>
+                <p>Free Shipping on Orders Over ₱50</p>
                 <Link href="/shop" className="primary-btn">
                   SHOP NOW
                 </Link>

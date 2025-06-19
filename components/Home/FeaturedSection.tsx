@@ -1,109 +1,139 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import React from 'react';
+import React from "react";
+import Link from "next/link";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
+import { useApi } from "@/utils/swr";
+import { Product } from "@/models";
+import Spinner from "../Others/Spinner";
+import toast from "react-hot-toast";
+import { addToCart } from "@/utils/cart";
 
-const products = [
-  {
-    id: 1,
-    categories: ['oranges', 'fresh-meat'],
-    image: '/img/featured/feature-1.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-  {
-    id: 2,
-    categories: ['vegetables', 'fastfood'],
-    image: '/img/featured/feature-2.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-  {
-    id: 3,
-    categories: ['vegetables', 'fresh-meat'],
-    image: '/img/featured/feature-3.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-  {
-    id: 4,
-    categories: ['fastfood', 'oranges'],
-    image: '/img/featured/feature-4.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-  {
-    id: 5,
-    categories: ['fresh-meat', 'vegetables'],
-    image: '/img/featured/feature-5.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-  {
-    id: 6,
-    categories: ['oranges', 'fastfood'],
-    image: '/img/featured/feature-6.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-  {
-    id: 7,
-    categories: ['fresh-meat', 'vegetables'],
-    image: '/img/featured/feature-7.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-  {
-    id: 8,
-    categories: ['fastfood', 'vegetables'],
-    image: '/img/featured/feature-8.jpg',
-    title: 'Crab Pool Security',
-    price: 30,
-  },
-];
+const shuffleArray = (array: Product[]) => {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
-const FeaturedSection: React.FC = () => {
+interface FeaturedSectionProps {
+  title?: string;
+}
+
+const FeaturedSection: React.FC<FeaturedSectionProps> = ({
+  title = "Featured Products",
+}) => {
+  // 1) Pass the Product[] generic to useApi
+  const { data, error, isLoading } = useApi<Product[]>(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/products?limit=8&shuffle=true`
+  );
+
+  const handleAddToCart = (product: Product) => {
+    try {
+      addToCart({
+        product_id: product.product_id,
+        image: product.image || "/img/default.jpg",
+        name: product.name,
+        quantity: 1,
+        price: product.price_cents / 100,
+      });
+      toast.success(`${product.name} added to cart!`);
+    } catch {
+      toast.error("Failed to add item to cart.");
+    }
+  };
+
+  // 2) Guard against undefined data
+  if (isLoading) return <Spinner />;
+  if (error) {
+    return (
+      <section className="featured spad">
+        <div className="container">
+          <h2>Failed to load products.</h2>
+        </div>
+      </section>
+    );
+  }
+  if (!data) return <Spinner />; // optional extra guard
+
+  // Now data is Product[]
+  const products = shuffleArray(data).slice(0, 8);
+
   return (
     <section className="featured spad">
       <div className="container">
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="section-title">
-              <h2>Featured Product</h2>
-            </div>
-          </div>
+        <div className="section-title from-blog__title">
+          <h2>{title}</h2>
         </div>
         <div className="row featured__filter">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className={`col-lg-3 col-md-4 col-sm-6 mix ${product.categories.join(' ')}`}
-            >
-              <div className="featured__item">
-                <div
-                  className="featured__item__pic set-bg"
-                  style={{ backgroundImage: `url(${product.image})` }}
-                >
-                  <ul className="featured__item__pic__hover">
-                   <li>
-                          <Link href="/shop/details">
-                            <i className="fa fa-expand"></i>
-                          </Link>
-                        </li>
-                        <li>
-                          <Link href="#">
-                            <i className="fa fa-shopping-cart"></i>
-                          </Link>
-                        </li>
-                  </ul>
+          {products.map((product) => {
+            const ttId = `tt-${product.product_id}`;
+            return (
+              <div
+                key={product.product_id}
+                className={`col-lg-3 col-md-4 col-sm-6 mix ${product.category}`}
+              >
+                <div className="featured__item">
+                  <div
+                    className="featured__item__pic set-bg"
+                    style={{
+                      backgroundImage: `url(${
+                        product.image || "/img/default.jpg"
+                      })`,
+                    }}
+                  >
+                    <ul className="featured__item__pic__hover">
+                      <li
+                        data-tooltip-id={ttId}
+                        data-tooltip-content="View Details"
+                        data-tooltip-place="top"
+                      >
+                        <Link href={`/shop/details?id=${product.product_id}`}>
+                          <i className="fa fa-expand" />
+                        </Link>
+                      </li>
+                      <li
+                        data-tooltip-id={ttId}
+                        data-tooltip-content="Add to Cart"
+                        data-tooltip-place="top"
+                      >
+                        <button onClick={() => handleAddToCart(product)}>
+                          <i className="fa fa-shopping-cart" />
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="featured__item__text">
+                    <h6>
+                      <Link href="#">{product.name}</Link>
+                    </h6>
+                    <h5>₱{(product.price_cents / 100).toFixed(2)}</h5>
+                    <div className="d-flex justify-content-center mt-3 gap-2">
+                      <button
+                        className="primary-btn border-0"
+                        onClick={() => handleAddToCart(product)}
+                      >
+                        Add to cart
+                      </button>
+                      <Link
+                        href={`/shop/details?id=${product.product_id}`}
+                        className="light-btn border shop-expand-btn"
+                        data-tooltip-id={ttId}
+                        data-tooltip-content="View Details"
+                        data-tooltip-place="top"
+                      >
+                        <i className="fa fa-expand" />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-                <div className="featured__item__text">
-                  <h6><a href="#">{product.title}</a></h6>
-                  <h5>₱{product.price.toFixed(2)}</h5>
-                </div>
+                <Tooltip id={ttId} />
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

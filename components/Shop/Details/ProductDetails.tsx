@@ -1,10 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import type { Product } from "@/models";
+import { useApi } from "@/utils/swr";
+import Spinner from "@/components/Others/Spinner";
+import "react-tooltip/dist/react-tooltip.css";
+import { Tooltip } from "react-tooltip";
+import { addToCart } from "@/utils/cart"; // Import your cart utils
+import { toast } from "react-hot-toast";  // Import hot toast
+import { useRouter } from "next/router";
+import { setCookie } from "@/utils/cookies";
 
 const ProductDetails = () => {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const router = useRouter();
+
+  const {
+    data: product,
+    error,
+    isLoading,
+  } = useApi<Product>(id ? `${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}` : null);
+
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (value: number) => {
@@ -16,6 +35,58 @@ const ProductDetails = () => {
   const increment = () => handleQuantityChange(quantity + 1);
   const decrement = () => handleQuantityChange(quantity - 1);
 
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    try {
+      addToCart({
+        product_id: product.product_id,
+        image: product.image || "/img/default.jpg",
+        name: product.name,
+        quantity,
+        price: product.price_cents / 100,
+      });
+
+      setQuantity(1);
+
+      toast.success(`${product.name} added to cart!`);
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to add to cart.");
+    }
+  };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (error || !product) {
+    return (
+      <div className="text-center mt-5 text-danger">
+        Failed to load product.
+      </div>
+    );
+  }
+
+  const handleBuyNow = () => {
+    if (!product) return;
+
+    addToCart({
+      product_id: product.product_id,
+      image: product.image || "/img/default.jpg",
+      name: product.name,
+      quantity,
+      price: product.price_cents / 100,
+    }, `${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`);
+
+    setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, "cart_true", {
+      path: "/",
+      sameSite: "Lax",
+    });
+
+    router.push("/shop/checkout");
+  };
+
   return (
     <section className="product-details spad">
       <div className="container">
@@ -25,8 +96,8 @@ const ProductDetails = () => {
               <div className="product__details__pic__item">
                 <Image
                   className="product-image img-fluid border-radius-24"
-                  src="/img/product/details/product-details-1.jpg"
-                  alt="Main product"
+                  src={product.image || "/img/placeholder.jpg"}
+                  alt={product.name}
                   width={500}
                   height={500}
                 />
@@ -36,11 +107,11 @@ const ProductDetails = () => {
 
           <div className="col-md-7">
             <div className="product__details__text">
-              <h3>Vegetable’s Package</h3>
-              <div className="product__details__price">₱50.00</div>
-              <p>
-                Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a...
-              </p>
+              <h3>{product.name}</h3>
+              <div className="product__details__price fw-bold">
+                ₱{(product.price_cents / 100).toFixed(2)}
+              </div>
+              <p>{product.description}</p>
 
               <div className="product__details__quantity">
                 <div className="quantity">
@@ -93,25 +164,27 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              <Link href="/shop/checkout" className="primary-btn">
+              <button onClick={handleBuyNow} className="primary-btn border-0">
                 Buy Now
-              </Link>
-              <Link href="#" className="heart-icon">
+              </button>
+              <button
+                onClick={handleAddToCart}
+                className="heart-icon border-0 rounded-pill with-tooltip"
+                data-tooltip-content="Add to Cart"
+                data-tooltip-place="top"
+              >
                 <span className="icon_cart_alt"></span>
-              </Link>
+              </button>
 
               <ul>
                 <li>
-                  <b>Availability</b> <span>In Stock</span>
+                  <b>Availability</b> <span>{"In Stock"}</span>
                 </li>
                 <li>
                   <b>Shipping</b>{" "}
                   <span>
-                    01 day shipping. <samp>Free pickup today</samp>
+                    01 day shipping. <samp> Free pickup today</samp>
                   </span>
-                </li>
-                <li>
-                  <b>Weight</b> <span>0.5 kg</span>
                 </li>
                 <li>
                   <b>Share on</b>
@@ -133,64 +206,9 @@ const ProductDetails = () => {
               </ul>
             </div>
           </div>
-
-          <div className="col-lg-12">
-            <div className="product__details__tab">
-              <ul className="nav nav-tabs" role="tablist">
-                <li className="nav-item">
-                  <a
-                    className="nav-link active"
-                    data-toggle="tab"
-                    href="#tabs-1"
-                    role="tab"
-                  >
-                    Description
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    data-toggle="tab"
-                    href="#tabs-2"
-                    role="tab"
-                  >
-                    Information
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    data-toggle="tab"
-                    href="#tabs-3"
-                    role="tab"
-                  >
-                    Reviews <span>(1)</span>
-                  </a>
-                </li>
-              </ul>
-
-              <div className="tab-content">
-                {["1", "2", "3"].map((tab) => (
-                  <div
-                    key={tab}
-                    className={`tab-pane ${tab === "1" ? "active" : ""}`}
-                    id={`tabs-${tab}`}
-                    role="tabpanel"
-                  >
-                    <div className="product__details__tab__desc">
-                      <h6>Products Information</h6>
-                      <p>
-                        Vestibulum ac diam sit amet quam vehicula elementum sed
-                        sit amet dui... (Tab {tab} content)
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+      <Tooltip anchorSelect=".with-tooltip" />
     </section>
   );
 };

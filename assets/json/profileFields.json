@@ -1,0 +1,12 @@
+[
+  { "label": "Full Name", "key": "fullName" },
+  { "label": "Email", "key": "email" },
+  { "label": "Phone", "key": "phone" },
+  { "label": "Country", "key": "country" },
+  { "label": "State", "key": "state" },
+  { "label": "City", "key": "city" },
+  { "label": "Address Line 1", "key": "address1" },
+  { "label": "Address Line 2", "key": "address2" },
+  { "label": "Postcode/ZIP", "key": "zip" },
+  { "label": "Order Notes", "key": "orderNotes" }
+]

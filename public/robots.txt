@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://e-commerce.jude-alexis-dy.site/sitemap.xml

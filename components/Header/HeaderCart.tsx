@@ -1,0 +1,105 @@
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import { Dropdown } from 'react-bootstrap';
+import { getEncryptedCookie } from '@/utils/cookieWithCrypto';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { UserCookie } from '@/models';
+import { removeAuthCookies } from '@/utils/headerUtils';
+
+type HeaderCartProps = {
+  cartItemCount: number;
+  cartTotalPrice: number;
+};
+
+const HeaderCart: React.FC<HeaderCartProps> = ({ cartItemCount, cartTotalPrice }) => {
+  const session_token = getEncryptedCookie(`${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE}`);
+  const user = getEncryptedCookie(`${process.env.NEXT_PUBLIC_USER_COOKIE}`) as UserCookie | null;
+  const is_auth = getEncryptedCookie(`${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE}`);
+  const router = useRouter();
+
+  const isAuthenticated = session_token && user && is_auth === 'auth_true';
+
+  const handleLogout = async () => {
+    removeAuthCookies();
+
+    await fetch("/api/delete-cookie", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE_SERVER}` }),
+    });
+
+    await fetch("/api/delete-cookie", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: `${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE_SERVER}` }),
+    });
+
+    // Optional: redirect to login or homepage
+    toast.success("Logout Successful!")
+    router.push('/login');
+  };
+
+  return (
+    <div className="col-lg-3">
+      <div className="header__cart">
+        <ul>
+          <li>
+            {isAuthenticated ? (
+              <Dropdown className="d-lg-none d-block">
+                <Dropdown.Toggle id="dropdown-basic" className="header-dropdown">
+                  <i className="fa fa-user me-1"></i>
+                  {user.full_name}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="overflow-hidden">
+                  <Dropdown.Item as="span">
+                    <Link href="/profile" className="header-dropdown-link">
+                      My Profile
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item as="span">
+                    <Link href="/profile/orders" className="header-dropdown-link">
+                      Your Orders
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item as="span">
+                    <Link href="/profile/orders/completed" className="header-dropdown-link">
+                      Completed Orders
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item as="span">
+                    <button className="header-dropdown-link header-dropdown-logout-mobile" onClick={handleLogout}>Logout</button>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <Link
+                href="/login"
+                className="d-lg-none d-block text-black fw-semibold"
+              >
+                <i className="fa fa-user"></i> Login
+              </Link>
+            )}
+          </li>
+          <li>
+            <Link href="/shop/cart">
+              <i className="fa fa-shopping-bag"></i> <span>{cartItemCount}</span>
+            </Link>
+          </li>
+        </ul>
+        <div className="header__cart__price">
+          {cartItemCount} items: <span>₱{cartTotalPrice.toFixed(2)}</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HeaderCart;

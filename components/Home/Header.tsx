@@ -1,18 +1,48 @@
+//components/Home/Header.tsx
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import {
+  getCookie,
+  calculateCartInfo,
+  savePathIfAllowed,
+  checkDirectCart,
+  updateHasCartCookie,
+} from "@/utils/headerUtils";
+import { hasCartItems } from "@/utils/cart";
+import dynamic from "next/dynamic";
+
+const HeaderTop = dynamic(() => import("../Header/HeaderTop"), { ssr: false });
+const MobileNav = dynamic(() => import("../Header/MobileNav"), { ssr: false });
+const HeaderCart = dynamic(() => import("../Header/HeaderCart"), {
+  ssr: false,
+});
 
 const Header = () => {
   const pathname = usePathname();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const [cartTotalPrice, setCartTotalPrice] = useState(0);
+  const cartCookieName = process.env.NEXT_PUBLIC_CART_COOKIE || "cart";
+  const lastCookieRef = useRef("");
 
   const isActive = (path: string) => pathname.startsWith(path);
-
   const toggleMobileNav = () => setIsMobileNavOpen((prev) => !prev);
   const closeMobileNav = () => setIsMobileNavOpen(false);
+
+  const updateCartInfo = () => {
+    const { totalItems, totalPrice } = calculateCartInfo();
+    setCartItemCount(totalItems);
+    setCartTotalPrice(totalPrice);
+  };
+
+  useEffect(() => {
+    savePathIfAllowed(pathname);
+    checkDirectCart(pathname);
+  }, [pathname]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,70 +51,40 @@ const Header = () => {
       }
     };
 
-    // Initial check in case screen is already large
-    handleResize();
-
+    handleResize(); // Run on mount
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    updateCartInfo(); // Initial load
+    window.addEventListener("storage", updateCartInfo); // Handle cross-tab changes
+
+    // Poll for cookie changes
+    const interval = setInterval(() => {
+      const currentCookie = getCookie(cartCookieName);
+      if (currentCookie !== lastCookieRef.current) {
+        lastCookieRef.current = currentCookie;
+        updateCartInfo();
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", updateCartInfo);
+    };
+  }, [cartCookieName]);
+
+  useEffect(() => {
+    hasCartItems(`${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`);
+    hasCartItems(`${process.env.NEXT_PUBLIC_CART_COOKIE}`);
+    updateHasCartCookie();
   }, []);
 
   return (
     <>
       <header className="header">
-        <div className="header__top">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-6 col-md-6">
-                <div className="header__top__left">
-                  <ul>
-                    <li>
-                      <i className="fa fa-envelope"></i> dyjudealexis@gmail.com
-                    </li>
-                    <li>Free Shipping for all Order of ₱99</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <div className="header__top__right">
-                  <div className="header__top__right__social">
-                    <a href="#">
-                      <i className="fa fa-facebook"></i>
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-twitter"></i>
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-linkedin"></i>
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-pinterest-p"></i>
-                    </a>
-                  </div>
-                  <div className="header__top__right__language">
-                    <Image
-                      src="/img/ph-flag.png"
-                      alt="Language"
-                      width={20}
-                      height={20}
-                    />
-                    <div>PHP</div>
-                    <span className="arrow_carrot-down"></span>
-                    <ul>
-                      <li>
-                        <a href="#">PHP</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="header__top__right__auth">
-                    <Link href="/login">
-                      <i className="fa fa-user"></i> Login
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HeaderTop />
 
         <div className="container">
           <div className="row align-items-center">
@@ -106,32 +106,23 @@ const Header = () => {
                   <li className={pathname === "/" ? "active" : ""}>
                     <Link href="/">Home</Link>
                   </li>
+                  <li className={isActive("/about") ? "active" : ""}>
+                    <Link href="/about">About</Link>
+                  </li>
                   <li className={isActive("/shop") ? "active" : ""}>
                     <Link href="/shop">Shop</Link>
                   </li>
-                  <li className={isActive("/blog") ? "active" : ""}>
-                    <Link href="/blog">Blog</Link>
-                  </li>
+
                   <li className={isActive("/contact-me") ? "active" : ""}>
                     <Link href="/contact-me">Contact</Link>
                   </li>
                 </ul>
               </nav>
             </div>
-            <div className="col-lg-3">
-              <div className="header__cart">
-                <ul>
-                  <li>
-                    <Link href="/shop/cart">
-                      <i className="fa fa-shopping-bag"></i> <span>3</span>
-                    </Link>
-                  </li>
-                </ul>
-                <div className="header__cart__price">
-                  2 items: <span>₱150.00</span>
-                </div>
-              </div>
-            </div>
+            <HeaderCart
+              cartItemCount={cartItemCount}
+              cartTotalPrice={cartTotalPrice}
+            />
           </div>
 
           {/* Hamburger icon */}
@@ -144,50 +135,7 @@ const Header = () => {
       {/* Mobile Menu Overlay */}
       {isMobileNavOpen && (
         <>
-          <div className="mobile__nav">
-            {/* Close icon */}
-           
-            <div className="mobile__nav__content">
-              <ul>
-                <li className={pathname === "/" ? "active" : ""}>
-                  <Link href="/" onClick={closeMobileNav}>
-                    Home
-                  </Link>
-                </li>
-                <li className={isActive("/shop") ? "active" : ""}>
-                  <Link href="/shop" onClick={closeMobileNav}>
-                    Shop
-                  </Link>
-                </li>
-                <li className={isActive("/blog") ? "active" : ""}>
-                  <Link href="/blog" onClick={closeMobileNav}>
-                    Blog
-                  </Link>
-                </li>
-                <li className={isActive("/contact-me") ? "active" : ""}>
-                  <Link href="/contact-me" onClick={closeMobileNav}>
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-               <i
-              className="fa fa-times"
-              onClick={closeMobileNav}
-              style={{
-                position: "absolute",
-                top: 20,
-                right: 20,
-                fontSize: "24px",
-                cursor: "pointer",
-                zIndex: 1060,
-              }}
-            ></i>
-            </div>
-            <div
-              className="mobile__nav__backdrop"
-              onClick={closeMobileNav}
-            ></div>
-          </div>
+          <MobileNav closeMobileNav={closeMobileNav} />
         </>
       )}
     </>

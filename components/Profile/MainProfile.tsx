@@ -1,46 +1,62 @@
 'use client';
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import ProfileSidebar from './ProfileSidebar';
-import Link from 'next/link'; // if you're using Next.js for routing
+import Link from 'next/link';
+import { getEncryptedCookie } from '@/utils/cookieWithCrypto';
+import type { UserCookie } from '@/models';
+import profileFields from '@/assets/json/profileFields.json';
 
 const MainProfile = () => {
-  const profileInfo = {
-    firstName: 'John',
-    lastName: 'Doe',
-    country: 'United States',
-    address1: '123 Main Street',
-    address2: 'Apt 4B',
-    city: 'New York',
-    state: 'NY',
-    zip: '10001',
-    phone: '+1 555-123-4567',
-    email: 'john.doe@example.com',
-    orderNotes: 'Leave at front door',
-  };
+  const [profileInfo, setProfileInfo] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    country: '',
+    state: '',
+    city: '',
+    address1: '',
+    address2: '',
+    zip: '',
+    orderNotes: ''
+  });
+
+  useEffect(() => {
+    const cookieString = process.env.NEXT_PUBLIC_USER_COOKIE!;
+    const raw = getEncryptedCookie(cookieString);
+    const user = raw as UserCookie;
+    if (user && user.full_name) {
+      const addr = user.addresses?.[0] ?? {};
+      setProfileInfo({
+        fullName: user.full_name,
+        email: user.email,
+        phone: user.phone,
+        country: addr.country ?? '',
+        state: addr.state ?? '',
+        city: addr.city ?? '',
+        address1: addr.line1 ?? '',
+        address2: addr.line2 ?? '',
+        zip: addr.postal_code ?? '',
+        orderNotes: addr.order_notes ?? '',
+      });
+    }
+  }, []);
 
   return (
     <section className="shoping-cart spad">
       <div className="container">
         <div className="row">
-          {/* Sidebar */}
           <ProfileSidebar />
-
-          {/* Main Content */}
           <div className="col-lg-9">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h4 className="fw-bold m-0">My Profile</h4>
               <Link href="/profile/edit" className="primary-btn">Edit</Link>
             </div>
             <div className="profile-info">
-              <p className='text-black mb-1'><strong>Full Name:</strong> {profileInfo.firstName} {profileInfo.lastName}</p>
-              <p className='text-black mb-1'><strong>Email:</strong> {profileInfo.email}</p>
-              <p className='text-black mb-1'><strong>Phone:</strong> {profileInfo.phone}</p>
-              <p className='text-black mb-1'><strong>Country:</strong> {profileInfo.country}</p>
-              <p className='text-black mb-1'><strong>State:</strong> {profileInfo.state}</p>
-              <p className='text-black mb-1'><strong>City:</strong> {profileInfo.city}</p>
-              <p className='text-black mb-1'><strong>Address:</strong> {profileInfo.address1}, {profileInfo.address2}</p>
-              <p className='text-black mb-1'><strong>Postcode/ZIP:</strong> {profileInfo.zip}</p>
-              <p className='text-black mb-1'><strong>Order Notes:</strong> {profileInfo.orderNotes}</p>
+              {profileFields.map(field => (
+                <p key={field.key} className="mb-2 text-black">
+                  <strong>{field.label}:</strong> {profileInfo[field.key as keyof typeof profileInfo]}
+                </p>
+              ))}
             </div>
           </div>
         </div>
