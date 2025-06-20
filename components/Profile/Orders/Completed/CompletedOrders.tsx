@@ -94,7 +94,7 @@ const CompletedOrders: React.FC = () => {
                               100
                             ).toFixed(2)}
                           </td>
-                          <td className="pt-5">
+                          <td className="pt-5 td-date">
                             {formatDateToReadable(item.updated_at || "")}
                           </td>
                           <td className="pt-5">

@@ -7,7 +7,7 @@ import {
 } from "@/utils/headerUtils";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -24,6 +24,7 @@ const HeaderTop = () => {
     `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE}`
   );
   const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     headerValidateWithPrefix(`${process.env.NEXT_PUBLIC_IS_PAID}`, "paid");
@@ -36,27 +37,35 @@ const HeaderTop = () => {
   const isAuthenticated = session_token && user && is_auth === "auth_true";
 
   const handleLogout = async () => {
-    removeAuthCookies();
+    setIsLoggingOut(true); // Start loading
 
-    await fetch("/api/delete-cookie", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE_SERVER}` }),
-    });
+    try {
+      removeAuthCookies();
 
-    await fetch("/api/delete-cookie", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: `${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE_SERVER}` }),
-    });
+      await fetch("/api/delete-cookie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE_SERVER}`,
+        }),
+      });
 
-    // Optional: redirect to login or homepage
-    toast.success("Logout Successful!");
-    router.push("/login");
+      await fetch("/api/delete-cookie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE_SERVER}`,
+        }),
+      });
+
+      toast.success("Logout Successful!");
+      router.push("/login");
+    } catch (error) {
+      toast.error("Logout failed. Try again.");
+      console.error(error);
+    } finally {
+      setIsLoggingOut(false); // End loading
+    }
   };
 
   return (
@@ -140,8 +149,9 @@ const HeaderTop = () => {
                         <button
                           className="header-dropdown-link header-dropdown-logout"
                           onClick={handleLogout}
+                          disabled={isLoggingOut}
                         >
-                          Logout
+                          {isLoggingOut ? "Logging out..." : "Logout"}
                         </button>
                       </Dropdown.Item>
                     </Dropdown.Menu>

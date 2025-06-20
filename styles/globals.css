@@ -226,9 +226,9 @@ input.read-only {
   color: #fff;
 }
 
-tbody, td, tfoot, th, thead, tr{
+/* tbody, td, tfoot, th, thead, tr{
   border-bottom: 0.5px solid #ebebeb;
-}
+} */
 
 .page-item.active .page-link {
     background-color: #c7595f;
@@ -258,4 +258,8 @@ tbody, td, tfoot, th, thead, tr{
 
 .list-group-logout:hover{
   color: #c7595f !important;
+}
+
+td.pt-5.td-date {
+    min-width: 120px;
 }

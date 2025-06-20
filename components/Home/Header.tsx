@@ -77,7 +77,9 @@ const Header = () => {
 
   useEffect(() => {
     hasCartItems(`${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`);
+    // console.log(hasCartItems(`${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`))
     hasCartItems(`${process.env.NEXT_PUBLIC_CART_COOKIE}`);
+    // console.log(hasCartItems(`${process.env.NEXT_PUBLIC_CART_COOKIE}`))
     updateHasCartCookie();
   }, []);
 

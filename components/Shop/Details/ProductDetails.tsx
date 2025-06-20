@@ -68,7 +68,7 @@ const ProductDetails = () => {
     );
   }
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!product) return;
 
     addToCart({
@@ -79,10 +79,8 @@ const ProductDetails = () => {
       price: product.price_cents / 100,
     }, `${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`);
 
-    setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, "cart_true", {
-      path: "/",
-      sameSite: "Lax",
-    });
+    setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, "cart_true");
+    await new Promise((r) => setTimeout(r, 0));
 
     router.push("/shop/checkout");
   };

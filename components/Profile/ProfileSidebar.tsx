@@ -3,7 +3,7 @@
 import { removeAuthCookies } from "@/utils/headerUtils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 const ProfileSidebar = () => {
@@ -31,28 +31,38 @@ const ProfileSidebar = () => {
     },
   ];
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = async () => {
-    removeAuthCookies();
+    setIsLoggingOut(true); // Start loading
 
-    await fetch("/api/delete-cookie", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE_SERVER}` }),
-    });
+    try {
+      removeAuthCookies();
 
-    await fetch("/api/delete-cookie", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: `${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE_SERVER}` }),
-    });
+      await fetch("/api/delete-cookie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE_SERVER}`,
+        }),
+      });
 
-    // Optional: redirect to login or homepage
-    toast.success("Logout Successful!");
-    router.push("/login");
+      await fetch("/api/delete-cookie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE_SERVER}`,
+        }),
+      });
+
+      toast.success("Logout Successful!");
+      router.push("/login");
+    } catch (error) {
+      toast.error("Logout failed. Try again.");
+      console.error(error);
+    } finally {
+      setIsLoggingOut(false); // End loading
+    }
   };
 
   return (
@@ -81,9 +91,10 @@ const ProfileSidebar = () => {
         <button
           className={`list-group-item list-group-item-action fw-semibold d-flex align-items-center gap-2 border border-radius-24 list-group-logout`}
           onClick={handleLogout}
+          disabled={isLoggingOut}
         >
           <i className={``}></i>
-          Logout
+          {isLoggingOut ? "Logging out..." : "Logout"}
         </button>
       </div>
     </div>

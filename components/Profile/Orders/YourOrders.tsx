@@ -15,8 +15,14 @@ const LIMIT = 5;
 
 const YourOrders: React.FC = () => {
   const [page, setPage] = useState(1);
+  const [loadingItemId, setLoadingItemId] = useState<number | null>(null);
 
-  const { data: response, error, isLoading, mutate } = useApi<ApiResponse>(
+  const {
+    data: response,
+    error,
+    isLoading,
+    mutate,
+  } = useApi<ApiResponse>(
     `${process.env.NEXT_PUBLIC_API_URL}/api/profile/order-items?status=pending&limit=${LIMIT}&page=${page}`
   );
 
@@ -25,20 +31,26 @@ const YourOrders: React.FC = () => {
   };
 
   const handleReceived = async (orderId: number, orderItemId: number) => {
+    setLoadingItemId(orderItemId); // start loading
     try {
-      await api.put(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/order-items/${orderId}`, {
-        items: [
-          {
-            order_item_id: orderItemId,
-            status: "shipped",
-          },
-        ],
-      });
+      await api.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/profile/order-items/${orderId}`,
+        {
+          items: [
+            {
+              order_item_id: orderItemId,
+              status: "shipped",
+            },
+          ],
+        }
+      );
       mutate();
       toast.success(`Thank you for your purchase!`);
     } catch (err) {
       console.error("Failed to update item status:", err);
       alert("Failed to update item status. Please try again.");
+    } finally {
+      setLoadingItemId(null); // stop loading
     }
   };
 
@@ -74,13 +86,13 @@ const YourOrders: React.FC = () => {
               <table className="table table-borderless align-middle">
                 <thead>
                   <tr>
+                    <th>Received?</th>
                     <th className="shoping__product">Product</th>
                     <th>Price</th>
                     <th>Qty</th>
                     <th>Total</th>
                     <th>Date Order</th>
                     <th>Status</th>
-                    <th>Received?</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -88,6 +100,39 @@ const YourOrders: React.FC = () => {
                     data.flatMap((order) =>
                       order.items.map((item) => (
                         <tr key={item.order_item_id}>
+                          <td className="pt-5">
+                            <button
+                              className="btn btn-sm btn-outline-success d-flex align-items-center gap-1 border-radius-24"
+                              title="Product received"
+                              onClick={() =>
+                                handleReceived(
+                                  order.order_id,
+                                  item.order_item_id
+                                )
+                              }
+                              disabled={
+                                item.status === "shipped" ||
+                                loadingItemId === item.order_item_id
+                              }
+                            >
+                              {loadingItemId === item.order_item_id ? (
+                                <>
+                                  <span
+                                    className="spinner-border spinner-border-sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                  ></span>
+                                  <span className="visually-hidden">
+                                    Loading...
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <i className="icon_check_alt2"></i> Received
+                                </>
+                              )}
+                            </button>
+                          </td>
                           <td className="shoping__cart__item d-flex align-items-center gap-3">
                             <Image
                               src={item.product.image || ""}
@@ -103,9 +148,13 @@ const YourOrders: React.FC = () => {
                           </td>
                           <td className="pt-5">{item.quantity}</td>
                           <td className="pt-5">
-                            ₱{((item.unit_price_cents * item.quantity) / 100).toFixed(2)}
+                            ₱
+                            {(
+                              (item.unit_price_cents * item.quantity) /
+                              100
+                            ).toFixed(2)}
                           </td>
-                          <td className="pt-5">
+                          <td className="pt-5 td-date">
                             {formatDateToReadable(item.updated_at || "")}
                           </td>
                           <td className="pt-5">
@@ -113,30 +162,20 @@ const YourOrders: React.FC = () => {
                               {item.status}
                             </span>
                           </td>
-                          <td className="pt-5">
-                            <button
-                              className="btn btn-sm btn-outline-success d-flex align-items-center gap-1 border-radius-24"
-                              title="Product received"
-                              onClick={() =>
-                                handleReceived(order.order_id, item.order_item_id)
-                              }
-                              disabled={item.status === "shipped"}
-                            >
-                              <i className="icon_check_alt2"></i> Received
-                            </button>
-                          </td>
                         </tr>
                       ))
                     )}
                 </tbody>
               </table>
               {data?.length === 0 && (
-                <p className="text-muted text-center py-5">No current orders.</p>
+                <p className="text-muted text-center py-5">
+                  No current orders.
+                </p>
               )}
             </div>
 
-            {
-              meta.totalPages >= 2 && <>
+            {meta.totalPages >= 2 && (
+              <>
                 {/* Full Pagination */}
                 <div className="d-flex justify-content-center mt-4">
                   <Pagination className="d-flex gap-2">
@@ -158,9 +197,9 @@ const YourOrders: React.FC = () => {
                       disabled={meta.currentPage === meta.totalPages}
                     />
                   </Pagination>
-                </div></>
-            }
-
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
