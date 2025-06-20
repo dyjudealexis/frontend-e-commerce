@@ -203,13 +203,22 @@ const ProductDetails = () => {
                 </button>
                 <button
                   onClick={handleAddToCart}
-                  className="heart-icon border-0 rounded-pill with-tooltip"
+                  className="heart-icon border-0 rounded-pill with-tooltip d-sm-block d-none"
                   data-tooltip-content="Add to Cart"
                   data-tooltip-place="top"
                 >
                   <span className="icon_cart_alt"></span>
                 </button>
               </div>
+
+              <button
+                  onClick={handleAddToCart}
+                  className="heart-icon border-0 rounded-pill with-tooltip d-sm-none d-block mt-3"
+                  data-tooltip-content="Add to Cart"
+                  data-tooltip-place="top"
+                >
+                  <span className="icon_cart_alt"></span>
+                </button>
 
               <ul>
                 <li>

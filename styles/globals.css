@@ -268,3 +268,7 @@ button.heart-icon.border-0.rounded-pill.with-tooltip {
     width: 51px;
     height: 51px;
 }
+
+button.primary-btn.border-0.d-flex.align-items-center.justify-content-center {
+    height: 51px;
+}
