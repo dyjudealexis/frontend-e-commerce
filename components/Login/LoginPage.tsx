@@ -112,10 +112,21 @@ const LoginPage: React.FC = () => {
                 )}
                 <button
                   type="submit"
-                  className="primary-btn w-100 border-0"
+                  className="primary-btn d-flex align-items-center justify-content-center w-100 border-0"
                   disabled={loading}
                 >
-                  {loading ? "Logging in..." : "LOGIN"}
+                  {loading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Logging In...
+                    </>
+                  ) : (
+                    "LOGIN"
+                  )}
                 </button>
               </form>
               <p className="mt-4">

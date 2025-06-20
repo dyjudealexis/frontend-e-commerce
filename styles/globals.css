@@ -263,3 +263,8 @@ input.read-only {
 td.pt-5.td-date {
     min-width: 120px;
 }
+
+button.heart-icon.border-0.rounded-pill.with-tooltip {
+    width: 51px;
+    height: 51px;
+}

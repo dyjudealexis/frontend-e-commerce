@@ -9,7 +9,7 @@ import Spinner from "@/components/Others/Spinner";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import { addToCart } from "@/utils/cart"; // Import your cart utils
-import { toast } from "react-hot-toast";  // Import hot toast
+import { toast } from "react-hot-toast"; // Import hot toast
 import { useRouter } from "next/router";
 import { setCookie } from "@/utils/cookies";
 
@@ -17,12 +17,15 @@ const ProductDetails = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
+  const [isBuying, setIsBuying] = useState(false);
 
   const {
     data: product,
     error,
     isLoading,
-  } = useApi<Product>(id ? `${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}` : null);
+  } = useApi<Product>(
+    id ? `${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}` : null
+  );
 
   const [quantity, setQuantity] = useState(1);
 
@@ -71,18 +74,30 @@ const ProductDetails = () => {
   const handleBuyNow = async () => {
     if (!product) return;
 
-    addToCart({
-      product_id: product.product_id,
-      image: product.image || "/img/default.jpg",
-      name: product.name,
-      quantity,
-      price: product.price_cents / 100,
-    }, `${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`);
+    try {
+      setIsBuying(true);
 
-    setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, "cart_true");
-    await new Promise((r) => setTimeout(r, 0));
+      addToCart(
+        {
+          product_id: product.product_id,
+          image: product.image || "/img/default.jpg",
+          name: product.name,
+          quantity,
+          price: product.price_cents / 100,
+        },
+        `${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`
+      );
 
-    router.push("/shop/checkout");
+      setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, "cart_true");
+
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
+
+      router.push("/shop/checkout");
+    } catch {
+      toast.error("Failed to proceed to checkout.");
+    } finally {
+      setIsBuying(false);
+    }
   };
 
   return (
@@ -111,7 +126,8 @@ const ProductDetails = () => {
               </div>
               <p>{product.description}</p>
 
-              <div className="product__details__quantity">
+              <div className="d-flex gap-1 w-100">
+                <div className="product__details__quantity">
                 <div className="quantity">
                   <div
                     className="pro-qty"
@@ -162,8 +178,23 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              <button onClick={handleBuyNow} className="primary-btn border-0">
-                Buy Now
+              <button
+                onClick={handleBuyNow}
+                className="primary-btn border-0 d-flex align-items-center justify-content-center"
+                disabled={isBuying}
+              >
+                {isBuying ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Buying...
+                  </>
+                ) : (
+                  "Buy Now"
+                )}
               </button>
               <button
                 onClick={handleAddToCart}
@@ -173,6 +204,8 @@ const ProductDetails = () => {
               >
                 <span className="icon_cart_alt"></span>
               </button>
+              </div>
+              
 
               <ul>
                 <li>

@@ -33,10 +33,10 @@ const ContactForm: React.FC = () => {
         message: formData.message,
       });
       setFormData({ name: "", email: "", subject: "", message: "" });
-      toast.success("Message sent successfully!")
+      toast.success("Message sent successfully!");
     } catch {
       // console.error(error);
-      toast.error("Failed to send message.")
+      toast.error("Failed to send message.");
     } finally {
       setLoading(false);
     }
@@ -92,8 +92,19 @@ const ContactForm: React.FC = () => {
                 rows={5}
                 required
               />
-              <button type="submit" className="site-btn" disabled={loading}>
-                {loading ? "SENDING..." : "SEND MESSAGE"}
+              <button type="submit" className="site-btn  d-flex align-items-center justify-content-center" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Sending...
+                  </>
+                ) : (
+                  "SEND MESSAGE"
+                )}
               </button>
             </form>
           </div>
@@ -103,13 +114,44 @@ const ContactForm: React.FC = () => {
             <div className="checkout__order">
               <h4 className="fw-bold mb-2">Contact Information</h4>
               <ul className="list-unstyled">
-                <li><strong>Name:</strong> Jude Alexis Dy</li>
-                <li><strong>Phone:</strong> +63 9204042919</li>
-                <li><strong>Email:</strong> dyjudealexis@gmail.com</li>
-                <li><strong>Website:</strong> <a href="https://jude-alexis-dy.site" target="_blank" rel="noopener noreferrer" className="link-a">jude-alexis-dy.site</a></li>
-                <li><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/jude-alexis-dy-9b7213215" target="_blank" rel="noopener noreferrer" className="link-a">linkedin.com/in/jude-alexis-dy</a></li>
-                <li><strong>Location:</strong> Taguig City, Metro Manila, Philippines</li>
-                <li><strong>Availability:</strong> Mon–Fri, 9AM–6PM</li>
+                <li>
+                  <strong>Name:</strong> Jude Alexis Dy
+                </li>
+                <li>
+                  <strong>Phone:</strong> +63 9204042919
+                </li>
+                <li>
+                  <strong>Email:</strong> dyjudealexis@gmail.com
+                </li>
+                <li>
+                  <strong>Website:</strong>{" "}
+                  <a
+                    href="https://jude-alexis-dy.site"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-a"
+                  >
+                    jude-alexis-dy.site
+                  </a>
+                </li>
+                <li>
+                  <strong>LinkedIn:</strong>{" "}
+                  <a
+                    href="https://linkedin.com/in/jude-alexis-dy-9b7213215"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-a"
+                  >
+                    linkedin.com/in/jude-alexis-dy
+                  </a>
+                </li>
+                <li>
+                  <strong>Location:</strong> Taguig City, Metro Manila,
+                  Philippines
+                </li>
+                <li>
+                  <strong>Availability:</strong> Mon–Fri, 9AM–6PM
+                </li>
               </ul>
             </div>
           </div>

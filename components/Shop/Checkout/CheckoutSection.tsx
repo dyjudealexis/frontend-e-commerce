@@ -209,10 +209,17 @@ const CheckoutSection: React.FC = () => {
                   </p>
                   <button
                     type="submit"
-                    className="site-btn"
+                    className="site-btn d-flex align-items-center justify-content-center"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Processing..." : "PLACE ORDER"}
+                    {isSubmitting ? <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Processing...
+                    </> : "PLACE ORDER"}
                   </button>
                 </div>
               </div>

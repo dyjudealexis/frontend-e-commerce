@@ -32,12 +32,15 @@ const RegisterPage: React.FC = () => {
     setMessage(null);
 
     try {
-      const response = await api.post(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, form);
+      const response = await api.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
+        form
+      );
       // setMessage("Registration successful! You can now log in.");
       setForm({ full_name: "", email: "", password: "" });
       console.log(response.data);
 
-      toast.success("Registration successful! You can now log in.")
+      toast.success("Registration successful! You can now log in.");
       router.push("/login");
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
@@ -96,10 +99,21 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <button
                   type="submit"
-                  className="primary-btn w-100 border-0"
+                  className="primary-btn d-flex align-items-center justify-content-center w-100 border-0"
                   disabled={loading}
                 >
-                  {loading ? "Registering..." : "REGISTER"}
+                  {loading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Registering...
+                    </>
+                  ) : (
+                    "REGISTER"
+                  )}
                 </button>
               </form>
               <p className="mt-4">
