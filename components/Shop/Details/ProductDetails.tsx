@@ -10,13 +10,13 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import { addToCart } from "@/utils/cart"; // Import your cart utils
 import { toast } from "react-hot-toast"; // Import hot toast
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { setCookie } from "@/utils/cookies";
 
 const ProductDetails = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const router = useRouter();
+  // const router = useRouter();
   const [isBuying, setIsBuying] = useState(false);
 
   const {
@@ -95,7 +95,8 @@ const ProductDetails = () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // 4) Client‑side Next.js navigation (now includes fresh cookies!)
-      router.push("/shop/checkout");
+      // router.push("/shop/checkout");
+      window.location.href = '/shop/checkout';
     } catch (err) {
       console.error(err);
       toast.error("Failed to proceed to checkout.");
