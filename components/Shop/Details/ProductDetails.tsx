@@ -73,10 +73,10 @@ const ProductDetails = () => {
 
   const handleBuyNow = async () => {
     if (!product) return;
+    setIsBuying(true);
 
     try {
-      setIsBuying(true);
-
+      // 1) Write the direct‑cart cookie
       addToCart(
         {
           product_id: product.product_id,
@@ -85,15 +85,19 @@ const ProductDetails = () => {
           quantity,
           price: product.price_cents / 100,
         },
-        `${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`
+        process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE
       );
 
-      setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, "cart_true");
+      // 2) Mark “has cart”—your helper should already set path:'/', secure, sameSite
+      setCookie(process.env.NEXT_PUBLIC_HAS_CART_COOKIE!, "cart_true");
 
-      await new Promise((resolve) => setTimeout(resolve, 500)); // 1 second delay
+      // 3) Let the cookie jar fully update
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
+      // 4) Client‑side Next.js navigation (now includes fresh cookies!)
       router.push("/shop/checkout");
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to proceed to checkout.");
     } finally {
       setIsBuying(false);
