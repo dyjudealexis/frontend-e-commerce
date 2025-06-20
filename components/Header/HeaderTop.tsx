@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { UserCookie } from "@/models";
 
@@ -23,7 +23,7 @@ const HeaderTop = () => {
   const is_auth = getEncryptedCookie(
     `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE}`
   );
-  const router = useRouter();
+  // const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
@@ -59,7 +59,8 @@ const HeaderTop = () => {
       });
 
       toast.success("Logout Successful!");
-      router.push("/login");
+      // router.push("/login");
+      window.location.href = '/login';
     } catch (error) {
       toast.error("Logout failed. Try again.");
       console.error(error);
@@ -124,12 +125,12 @@ const HeaderTop = () => {
                       {user.full_name}
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="overflow-hidden">
-                      <Dropdown.Item as="span">
+                      <Dropdown.Item as="span" href="/profile">
                         <Link href="/profile" className="header-dropdown-link">
                           My Profile
                         </Link>
                       </Dropdown.Item>
-                      <Dropdown.Item as="span">
+                      <Dropdown.Item as="span" href="/profile/orders">
                         <Link
                           href="/profile/orders"
                           className="header-dropdown-link"
@@ -137,7 +138,7 @@ const HeaderTop = () => {
                           Your Orders
                         </Link>
                       </Dropdown.Item>
-                      <Dropdown.Item as="span">
+                      <Dropdown.Item as="span" href="/profile/orders/completed">
                         <Link
                           href="/profile/orders/completed"
                           className="header-dropdown-link"
@@ -145,7 +146,7 @@ const HeaderTop = () => {
                           Completed Orders
                         </Link>
                       </Dropdown.Item>
-                      <Dropdown.Item as="span">
+                      <Dropdown.Item as="span" onClick={handleLogout}>
                         <button
                           className="header-dropdown-link header-dropdown-logout"
                           onClick={handleLogout}
