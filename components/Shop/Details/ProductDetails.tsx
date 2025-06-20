@@ -10,7 +10,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import { addToCart } from "@/utils/cart"; // Import your cart utils
 import { toast } from "react-hot-toast"; // Import hot toast
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { setCookie } from "@/utils/cookies";
 
 const ProductDetails = () => {
@@ -90,7 +90,7 @@ const ProductDetails = () => {
 
       setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, "cart_true");
 
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
+      await new Promise((resolve) => setTimeout(resolve, 500)); // 1 second delay
 
       router.push("/shop/checkout");
     } catch {
@@ -128,84 +128,83 @@ const ProductDetails = () => {
 
               <div className="d-flex gap-1 w-100">
                 <div className="product__details__quantity">
-                <div className="quantity">
-                  <div
-                    className="pro-qty"
-                    style={{ position: "relative", display: "inline-block" }}
-                  >
-                    <button
-                      onClick={decrement}
-                      style={{
-                        position: "absolute",
-                        left: 5,
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        border: "none",
-                        background: "none",
-                        fontSize: "16px",
-                        cursor: "pointer",
-                      }}
+                  <div className="quantity">
+                    <div
+                      className="pro-qty"
+                      style={{ position: "relative", display: "inline-block" }}
                     >
-                      −
-                    </button>
-                    <input
-                      type="number"
-                      value={quantity}
-                      readOnly
-                      style={{
-                        paddingLeft: "30px",
-                        paddingRight: "30px",
-                        textAlign: "center",
-                        width: "95px",
-                      }}
-                    />
-                    <button
-                      onClick={increment}
-                      style={{
-                        position: "absolute",
-                        right: 5,
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        border: "none",
-                        background: "none",
-                        fontSize: "16px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      +
-                    </button>
+                      <button
+                        onClick={decrement}
+                        style={{
+                          position: "absolute",
+                          left: 5,
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          border: "none",
+                          background: "none",
+                          fontSize: "16px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        −
+                      </button>
+                      <input
+                        type="number"
+                        value={quantity}
+                        readOnly
+                        style={{
+                          paddingLeft: "30px",
+                          paddingRight: "30px",
+                          textAlign: "center",
+                          width: "95px",
+                        }}
+                      />
+                      <button
+                        onClick={increment}
+                        style={{
+                          position: "absolute",
+                          right: 5,
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          border: "none",
+                          background: "none",
+                          fontSize: "16px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button
-                onClick={handleBuyNow}
-                className="primary-btn border-0 d-flex align-items-center justify-content-center"
-                disabled={isBuying}
-              >
-                {isBuying ? (
-                  <>
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Buying...
-                  </>
-                ) : (
-                  "Buy Now"
-                )}
-              </button>
-              <button
-                onClick={handleAddToCart}
-                className="heart-icon border-0 rounded-pill with-tooltip"
-                data-tooltip-content="Add to Cart"
-                data-tooltip-place="top"
-              >
-                <span className="icon_cart_alt"></span>
-              </button>
+                <button
+                  onClick={handleBuyNow}
+                  className="primary-btn border-0 d-flex align-items-center justify-content-center"
+                  disabled={isBuying}
+                >
+                  {isBuying ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Buying...
+                    </>
+                  ) : (
+                    "Buy Now"
+                  )}
+                </button>
+                <button
+                  onClick={handleAddToCart}
+                  className="heart-icon border-0 rounded-pill with-tooltip"
+                  data-tooltip-content="Add to Cart"
+                  data-tooltip-place="top"
+                >
+                  <span className="icon_cart_alt"></span>
+                </button>
               </div>
-              
 
               <ul>
                 <li>

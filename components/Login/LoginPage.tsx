@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AxiosError } from "axios";
 import api from "@/utils/axios";
 import { setEncryptedCookie } from "@/utils/cookieWithCrypto";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const LoginPage: React.FC = () => {

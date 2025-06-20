@@ -38,9 +38,14 @@ export const setCookie = (
   options?: Cookies.CookieAttributes
 ): void => {
   const serialized = serialize(value);
-  Cookies.set(key, serialized, { expires: 7, ...options });
+  Cookies.set(key, serialized, {
+    expires: 30,                                   // default 1 month
+    path: '/',                                    // always sent
+    secure: process.env.NEXT_PUBLIC_NODE_ENV === 'production',// only over HTTPS
+    sameSite: 'lax',                              // CSRF protection
+    ...options                                   // user overrides
+  });
 };
-
 // Get cookie with automatic type restoration
 export const getCookie = <T = unknown>(key: string): T | undefined => {
   const value = Cookies.get(key);

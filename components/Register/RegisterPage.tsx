@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { AxiosError } from "axios";
 import Link from "next/link";
 import api from "@/utils/axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const RegisterPage: React.FC = () => {
