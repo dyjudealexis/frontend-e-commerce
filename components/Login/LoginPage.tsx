@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AxiosError } from "axios";
 import api from "@/utils/axios";
 import { setEncryptedCookie } from "@/utils/cookieWithCrypto";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const LoginPage: React.FC = () => {
@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("demoaccount123");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +59,8 @@ const LoginPage: React.FC = () => {
         }),
       });
 
-      router.push("/profile");
+      // router.push("/profile");
+      window.location.href = '/profile';
 
       toast.success("Login Successful!");
 

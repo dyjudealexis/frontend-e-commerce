@@ -185,7 +185,9 @@ const ShoppingCart: React.FC = () => {
                     {cartItems.map((item) => (
                       <li key={item.product_id}>
                         {item.name} × {item.quantity}
-                        <span className="fw-semibold text-black">₱{(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="fw-semibold text-black">
+                          ₱{(item.price * item.quantity).toFixed(2)}
+                        </span>
                       </li>
                     ))}
                     <li
@@ -209,9 +211,14 @@ const ShoppingCart: React.FC = () => {
                       Total <span>₱{subtotal.toFixed(2)}</span>
                     </li>
                   </ul>
-                  <Link href="/shop/checkout" className="primary-btn">
+                  <button
+                    className="primary-btn border-0 w-100"
+                    onClick={() => {
+                      window.location.href = "/shop/checkout";
+                    }}
+                  >
                     PROCEED TO CHECKOUT
-                  </Link>
+                  </button>
                 </div>
               </div>
             </>
