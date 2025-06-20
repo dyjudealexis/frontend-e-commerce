@@ -143,6 +143,7 @@ a,
 .light-btn:hover {
   background-color: #c7595f;
   color: white;
+  border-color: #c7595f;
 }
 
 .shop-expand-btn {
