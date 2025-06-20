@@ -107,10 +107,7 @@ export const updateHasCartCookie = () => {
   const hasItems =
     hasCartItems() || hasCartItems(`${process.env.NEXT_PUBLIC_DIRECT_CART_COOKIE}`);
 
-  setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, hasItems ? "cart_true" : "cart_false", {
-    path: "/",
-    sameSite: "Lax",
-  });
+  setCookie(`${process.env.NEXT_PUBLIC_HAS_CART_COOKIE}`, hasItems ? "cart_true" : "cart_false");
 };
 
 export const removeAuthCookies = () => {
