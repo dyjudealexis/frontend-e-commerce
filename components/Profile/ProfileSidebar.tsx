@@ -2,13 +2,13 @@
 
 import { removeAuthCookies } from "@/utils/headerUtils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 const ProfileSidebar = () => {
   const pathname = usePathname();
-  // const router = useRouter();
+  const router = useRouter();
 
   const links = [
     {
@@ -55,9 +55,10 @@ const ProfileSidebar = () => {
         }),
       });
 
+      toast.dismiss();
       toast.success("Logout Successful!");
-      // router.push("/login");
-      window.location.href = '/login';
+      router.push("/login");
+      // window.location.href = '/login';
     } catch (error) {
       toast.error("Logout failed. Try again.");
       console.error(error);

@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { UserCookie } from "@/models";
 
@@ -23,7 +23,7 @@ const HeaderTop = () => {
   const is_auth = getEncryptedCookie(
     `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE}`
   );
-  // const router = useRouter();
+  const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
@@ -58,9 +58,10 @@ const HeaderTop = () => {
         }),
       });
 
+      toast.dismiss();
       toast.success("Logout Successful!");
-      // router.push("/login");
-      window.location.href = '/login';
+      router.push("/login");
+      // window.location.href = '/login';
     } catch (error) {
       toast.error("Logout failed. Try again.");
       console.error(error);

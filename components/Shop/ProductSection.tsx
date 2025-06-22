@@ -159,9 +159,8 @@ const ProductSection: React.FC = () => {
                       <div
                         className="product__item__pic"
                         style={{
-                          backgroundImage: `url(${
-                            product.image || "/img/default.jpg"
-                          })`,
+                          backgroundImage: `url(${product.image || "/img/default.jpg"
+                            })`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                           height: "250px",

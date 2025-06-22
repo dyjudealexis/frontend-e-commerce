@@ -5,12 +5,14 @@ import Footer from '@/components/Home/Footer';
 import HeroSection from '@/components/Shop/HeroSection';
 import ProductSection from '@/components/Shop/ProductSection';
 
+
 const Shop = () => {
   const pageTitle = "Shop Online | Best Deals on Products - E-Commerce";
   const pageDescription =
     "Browse the latest and best-selling products in our E-Commerce shop. Enjoy secure checkout, fast delivery, and exclusive offers.";
   const pageUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/shop`; // Replace with your actual URL
   const imageUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/img/og-image.webp`; // Replace with your image URL
+
 
   return (
     <>
@@ -45,11 +47,13 @@ const Shop = () => {
         {/* Optional: Favicon */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div className="position-relative">
+        <Header />
+        <HeroSection />
+        <ProductSection />
+        <Footer />
+      </div>
 
-      <Header />
-      <HeroSection />
-      <ProductSection />
-      <Footer />
     </>
   );
 };
