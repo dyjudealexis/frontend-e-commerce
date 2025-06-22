@@ -1,6 +1,6 @@
 # 🛍️ E-Commerce Platform
 
-A modern e-commerce application built with **Next.js**, offering seamless shopping experiences for customers and essential tools for admins to manage products and orders.
+A modern e-commerce application built with **Next.js** developed by **Jude Alexis Dy**, offering seamless shopping experiences for customers and essential tools for admins to manage products and orders.
 
 ## ✨ Features
 
