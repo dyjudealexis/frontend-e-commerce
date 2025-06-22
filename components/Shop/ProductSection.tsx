@@ -10,6 +10,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 import { addToCart } from "@/utils/cart";
 import toast from "react-hot-toast";
+import FullPageSpinner from "../Others/FullPageSpinner";
 
 const ProductSection: React.FC = () => {
   const searchParams = useSearchParams();
@@ -18,6 +19,7 @@ const ProductSection: React.FC = () => {
 
   const searchQuery = searchParams.get("search") || "";
   const categoryQuery = searchParams.get("category") || "";
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
 
   // Wait until searchParams is fully _defined_, not just once rendered
   useEffect(() => {
@@ -92,6 +94,11 @@ const ProductSection: React.FC = () => {
     } catch {
       toast.error("Failed to add item to cart.");
     }
+  };
+
+  const handleButtonClick = async (id: number) => {
+    setIsLoadingDetail(true);
+    await router.push(`/shop/details?id=${id}`);
   };
 
   return (
@@ -172,11 +179,11 @@ const ProductSection: React.FC = () => {
                             data-tooltip-content="View Details"
                             data-tooltip-place="top"
                           >
-                            <Link
-                              href={`/shop/details?id=${product.product_id}`}
+                            <button
+                              onClick={() => {handleButtonClick(product.product_id)}}
                             >
                               <i className="fa fa-expand" />
-                            </Link>
+                            </button>
                           </li>
                           <li
                             className="with-tooltip"
@@ -191,23 +198,23 @@ const ProductSection: React.FC = () => {
                       </div>
                       <div className="product__item__text">
                         <h6>
-                          <Link href={`/shop/details?id=${product.product_id}`}>
+                          <button onClick={() => {handleButtonClick(product.product_id)}} className="border-0 bg-transparent">
                             {product.name}
-                          </Link>
+                          </button>
                         </h6>
                         <h5>₱{(product.price_cents / 100).toFixed(2)}</h5>
                         <div className="d-flex justify-content-center mt-3 gap-2">
                           <button className="primary-btn border-0 with-tooltip" onClick={() => handleAddToCart(product)}>
                             Add to cart
                           </button>
-                          <Link
-                            href={`/shop/details?id=${product.product_id}`}
+                          <button
+                            onClick={() => {handleButtonClick(product.product_id)}}
                             className="light-btn border shop-expand-btn with-tooltip"
                             data-tooltip-content="View Details"
                             data-tooltip-place="top"
                           >
                             <i className="fa fa-expand" />
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -223,6 +230,7 @@ const ProductSection: React.FC = () => {
         </div>
       </div>
       <Tooltip anchorSelect=".with-tooltip" />
+      {isLoadingDetail && <FullPageSpinner />}
     </section>
   );
 };

@@ -13,6 +13,7 @@ import { loadCheckoutData } from "@/utils/loadCheckoutData";
 import inputFields from "@/assets/json/checkoutInputs.json";
 import { Profile } from "@/models";
 import { setCookie } from "@/utils/cookies";
+import FullPageSpinner from "@/components/Others/FullPageSpinner";
 
 const CheckoutSection: React.FC = () => {
   const router = useRouter();
@@ -227,6 +228,7 @@ const CheckoutSection: React.FC = () => {
           </form>
         </div>
       </div>
+      {isSubmitting && <FullPageSpinner />}
     </section>
   );
 };

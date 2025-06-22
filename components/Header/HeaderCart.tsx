@@ -5,9 +5,10 @@ import Link from "next/link";
 import { Dropdown } from "react-bootstrap";
 import { getEncryptedCookie } from "@/utils/cookieWithCrypto";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { UserCookie } from "@/models";
 import { removeAuthCookies } from "@/utils/headerUtils";
+import FullPageSpinner from "../Others/FullPageSpinner";
 
 type HeaderCartProps = {
   cartItemCount: number;
@@ -27,7 +28,7 @@ const HeaderCart: React.FC<HeaderCartProps> = ({
   const is_auth = getEncryptedCookie(
     `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE}`
   );
-  const router = useRouter();
+  // const router = useRouter();
 
   const isAuthenticated = session_token && user && is_auth === "auth_true";
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -61,8 +62,8 @@ const HeaderCart: React.FC<HeaderCartProps> = ({
       // Optional: redirect to login or homepage
       toast.dismiss();
       toast.success("Logout Successful!");
-      router.push("/login");
-      // window.location.href = '/login';
+      // router.push("/login");
+      window.location.href = '/login';
     } catch (error) {
       toast.error("Logout failed. Try again.");
       console.error(error);
@@ -139,6 +140,7 @@ const HeaderCart: React.FC<HeaderCartProps> = ({
           {cartItemCount} items: <span>₱{cartTotalPrice.toFixed(2)}</span>
         </div>
       </div>
+      {isLoggingOut && <FullPageSpinner />}
     </div>
   );
 };
