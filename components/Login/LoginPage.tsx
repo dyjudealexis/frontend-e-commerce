@@ -59,14 +59,14 @@ const LoginPage: React.FC = () => {
         }),
       });
 
-      await fetch("/api/set-cookie", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          key: `${process.env.NEXT_PUBLIC_USER_COOKIE_SERVER}`,
-          value: JSON.stringify(user),
-        }),
-      });
+      // await fetch("/api/set-cookie", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     key: `${process.env.NEXT_PUBLIC_USER_COOKIE_SERVER}`,
+      //     value: JSON.stringify(user),
+      //   }),
+      // });
 
       // router.push("/profile");
       window.location.href = '/profile';
