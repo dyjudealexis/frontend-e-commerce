@@ -33,12 +33,12 @@ const LoginPage: React.FC = () => {
 
       setEncryptedCookie(
         `${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE}`,
-        token
+        token, { expires: 30 }
       );
-      setEncryptedCookie(`${process.env.NEXT_PUBLIC_USER_COOKIE}`, user);
+      setEncryptedCookie(`${process.env.NEXT_PUBLIC_USER_COOKIE}`, user, { expires: 30 });
       setEncryptedCookie(
         `${process.env.NEXT_PUBLIC_IS_AUTHENTICATED_COOKIE}`,
-        "auth_true"
+        "auth_true", { expires: 30 }
       );
 
       await fetch("/api/set-cookie", {
@@ -56,6 +56,15 @@ const LoginPage: React.FC = () => {
         body: JSON.stringify({
           key: `${process.env.NEXT_PUBLIC_SESSION_TOKEN_COOKIE_SERVER}`,
           value: token,
+        }),
+      });
+
+      await fetch("/api/set-cookie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          key: `${process.env.NEXT_PUBLIC_USER_COOKIE_SERVER}`,
+          value: JSON.stringify(user),
         }),
       });
 
